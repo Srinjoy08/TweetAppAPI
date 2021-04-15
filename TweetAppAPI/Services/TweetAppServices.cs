@@ -25,13 +25,32 @@ namespace TweetAppAPI.Services
         {
             return _users.Find(user => user.LoginId == loginId).FirstOrDefault();
         }
-
-       
-
-        public bool RegisterUser(User user)
+        public User GetUserByEmailId(string email)
         {
-            _users.InsertOne(user);
-            return true;
+            return _users.Find(user => user.Email == email).FirstOrDefault();
+        }
+
+        
+
+        public int RegisterUser(User user)
+        {
+            User isExists = GetUserByLoginId(user.LoginId);
+            if(isExists != null)
+            {
+                return 1;
+            }
+            isExists = GetUserByEmailId(user.Email);
+            if(isExists != null)
+            {
+                return 2;
+            }
+            else
+            {
+                user.Id = Guid.NewGuid().ToString();
+                _users.InsertOne(user);
+                return 0;
+            }
+            
         }
 
     }

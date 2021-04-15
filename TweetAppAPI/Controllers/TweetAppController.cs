@@ -28,12 +28,24 @@ namespace TweetAppAPI.Controllers
             return Ok(_tweetAppServices.GetAllUsers());
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("[controller]/{user}")]
         public IActionResult RegisterUser(User user)
         {
-            return Ok(_tweetAppServices.RegisterUser(user));
+            int result = _tweetAppServices.RegisterUser(user);
+            
+            if(result == 1)
+            {
+                return BadRequest("LoginId already exists..!!");
+            }
+            else if (result == 2)
+            {
+                return BadRequest("Email address already exists..!!");
+            }
+            else
+            {
+                return Ok();
+            }
         }
     }
 }

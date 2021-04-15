@@ -30,7 +30,19 @@ namespace TweetAppAPI.Services
             return _users.Find(user => user.Email == email).FirstOrDefault();
         }
 
-        
+        public int LoginUser(string loginId, string password)
+        {
+            User isExists = GetUserByLoginId(loginId);
+            if (isExists != null)
+            {
+                if (isExists.Password == password)
+                    return 0;
+                else
+                    return 2;
+            }
+            else
+                return 1;
+        }
 
         public int RegisterUser(User user)
         {

@@ -29,14 +29,34 @@ namespace TweetAppAPI.Controllers
         }
 
         [HttpPost]
-        [Route("[controller]/{user}")]
+        [Route("[controller]/login/{user}")]
+        public IActionResult LoginUser(User user)
+        {
+            int result = _tweetAppServices.LoginUser(user.LoginId, user.Password);
+
+            if(result == 1)
+            {
+                return Unauthorized("Login Id does not exists..!!");
+            }
+            else if(result == 2)
+            {
+                return Unauthorized("Password Incorrect..!!");
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+        [HttpPost]
+        [Route("[controller]/register/{user}")]
         public IActionResult RegisterUser(User user)
         {
             int result = _tweetAppServices.RegisterUser(user);
             
             if(result == 1)
             {
-                return BadRequest("LoginId already exists..!!");
+                return BadRequest("Login Id already exists..!!");
             }
             else if (result == 2)
             {

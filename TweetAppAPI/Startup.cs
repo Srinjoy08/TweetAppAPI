@@ -34,6 +34,7 @@ namespace TweetAppAPI
 
             services.AddTransient<ITweetAppServices, TweetAppServices>();
             services.AddControllers();
+            services.AddCors();
 
         }
 
@@ -43,10 +44,9 @@ namespace TweetAppAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-
+            }            
             app.UseRouting();
-
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

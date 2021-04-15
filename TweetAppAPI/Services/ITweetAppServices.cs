@@ -11,6 +11,7 @@ namespace TweetAppAPI.Services
     {
         public List<User> GetAllUsers();
         public User GetUserByLoginId(string loginId);
-        public void RegisterUser(User user);
+        public bool RegisterUser(User user);
+        
     }
 }

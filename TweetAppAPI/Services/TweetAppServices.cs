@@ -26,9 +26,13 @@ namespace TweetAppAPI.Services
             return _users.Find(user => user.LoginId == loginId).FirstOrDefault();
         }
 
-        public void RegisterUser(User user)
+       
+
+        public bool RegisterUser(User user)
         {
-            
+            _users.InsertOne(user);
+            return true;
         }
+
     }
 }

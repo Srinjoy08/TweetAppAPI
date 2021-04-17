@@ -61,7 +61,7 @@ namespace TweetAppAPI.Controllers
         }
 
         [HttpPost]
-        [Route("[controller]/tweets/{reply}")]
+        [Route("[controller]/replies/{reply}")]
         public IActionResult PostReply(Reply reply)
         {
             int result = _tweetAppServices.PostReply(reply);

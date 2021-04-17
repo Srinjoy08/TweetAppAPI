@@ -10,10 +10,13 @@ namespace TweetAppAPI.Services
     public class TweetAppServices : ITweetAppServices
     {
         private IMongoCollection<User> _users;
+        private IMongoCollection<Tweet> _tweets;
         public TweetAppServices(IMongoClient client)
         {
             var database = client.GetDatabase("TweetDB");
             _users = database.GetCollection<User>("User_Details");
+            _tweets = database.GetCollection<Tweet>("Tweet");
+
         }
 
         public List<User> GetAllUsers()
@@ -55,12 +58,12 @@ namespace TweetAppAPI.Services
         public int RegisterUser(User user)
         {
             User isExists = GetUserByLoginId(user.LoginId);
-            if(isExists != null)
+            if (isExists != null)
             {
                 return 1;
             }
             isExists = GetUserByEmailId(user.Email);
-            if(isExists != null)
+            if (isExists != null)
             {
                 return 2;
             }
@@ -70,7 +73,17 @@ namespace TweetAppAPI.Services
                 _users.InsertOne(user);
                 return 0;
             }
-            
+
+        }
+        public List<Tweet> GetTweets()
+        {
+            return _tweets.Find(tweet => true).ToList();
+        }
+        public int PostTweet(Tweet tweet)
+        {
+            tweet.Id = Guid.NewGuid().ToString();
+            _tweets.InsertOne(tweet);
+            return 0;
         }
     }
 }

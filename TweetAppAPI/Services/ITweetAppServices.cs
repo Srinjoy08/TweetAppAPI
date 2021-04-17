@@ -15,6 +15,8 @@ namespace TweetAppAPI.Services
         public User GetUserByEmailId(string email);
         public int LoginUser(string loginId, string password);
         public int RegisterUser(User user);
+        public List<Tweet> GetTweets();
+        public int PostTweet(Tweet tweet);
         
     }
 }

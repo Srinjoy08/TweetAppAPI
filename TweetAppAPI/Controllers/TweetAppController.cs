@@ -13,7 +13,7 @@ using TweetAppAPI.Services;
 namespace TweetAppAPI.Controllers
 {
     [ApiController]
-    
+
     public class TweetAppController : ControllerBase
     {
         private ITweetAppServices _tweetAppServices;
@@ -30,12 +30,33 @@ namespace TweetAppAPI.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/{user}")]
-        
-        public IActionResult GetUserDetails(User user)
+        [Route("[controller]/{loginId}")]
+
+        public IActionResult GetUserDetails(string loginId)
         {
-            User response =_tweetAppServices.GetUserDetails(user.LoginId);
+            User response = _tweetAppServices.GetUserDetails(loginId);
             return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("[controller]/tweets/")]
+        public IActionResult GetTweets()
+        {
+            return Ok(_tweetAppServices.GetTweets());
+        }
+        [HttpPost]
+        [Route("[controller]/tweets/{tweet}")]
+        public IActionResult PostTweet(Tweet  tweet)
+        {
+            int result = _tweetAppServices.PostTweet(tweet);
+            if (result == 1)
+            {
+                return BadRequest("Failed to Post Tweet..!!");
+            }
+            else
+            {
+                return Ok();
+            }
         }
 
         [HttpPost]

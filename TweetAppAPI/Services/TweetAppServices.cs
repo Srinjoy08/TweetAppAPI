@@ -92,5 +92,25 @@ namespace TweetAppAPI.Services
             else
                 return 1;
         }
+
+        public int PostReply(Reply reply)
+        {
+            reply.ReplyId = Guid.NewGuid().ToString();
+            var result = _users.Find(user => user.LoginId == reply.ReplyLoginId).FirstOrDefault();
+            if (result != null )
+            {
+                reply.RepliedBy = string.Format(result.FirstName + " " + result.LastName);
+
+                var filter = Builders<Tweet>.Filter.Eq(e => e.Id, reply.TweetId);
+
+                var update = Builders<Tweet>.Update.Push<Reply>(e => e.Replies, reply);
+
+                _tweets.FindOneAndUpdate(filter, update);
+
+                return 0;
+            }
+            else
+                return 1;
+        }
     }
 }

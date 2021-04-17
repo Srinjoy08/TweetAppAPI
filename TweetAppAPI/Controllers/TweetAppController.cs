@@ -44,14 +44,30 @@ namespace TweetAppAPI.Controllers
         {
             return Ok(_tweetAppServices.GetTweets());
         }
+
         [HttpPost]
         [Route("[controller]/tweets/{tweet}")]
-        public IActionResult PostTweet(Tweet  tweet)
+        public IActionResult PostTweet(Tweet tweet)
         {
             int result = _tweetAppServices.PostTweet(tweet);
             if (result == 1)
             {
                 return BadRequest("Failed to Post Tweet..!!");
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+        [HttpPost]
+        [Route("[controller]/tweets/{reply}")]
+        public IActionResult PostReply(Reply reply)
+        {
+            int result = _tweetAppServices.PostReply(reply);
+            if (result == 1)
+            {
+                return BadRequest("Failed to Reply to Tweet..!!");
             }
             else
             {

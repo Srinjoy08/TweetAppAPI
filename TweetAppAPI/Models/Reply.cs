@@ -18,7 +18,7 @@ namespace TweetAppAPI.Models
         [BsonElement("repliedBy")]
         public string RepliedBy { get; set; }
         [BsonElement("replyLoginId")]
-        public string ReplyloginId { get; set; }
+        public string ReplyLoginId { get; set; }
         [BsonElement("tweetId")]
         public string TweetId { get; set; }
     }

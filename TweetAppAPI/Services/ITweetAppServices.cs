@@ -17,6 +17,7 @@ namespace TweetAppAPI.Services
         public int RegisterUser(User user);
         public List<Tweet> GetTweets();
         public int PostTweet(Tweet tweet);
-        
+        public int PostReply(Reply reply);
+
     }
 }

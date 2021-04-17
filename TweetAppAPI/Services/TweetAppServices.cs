@@ -82,8 +82,15 @@ namespace TweetAppAPI.Services
         public int PostTweet(Tweet tweet)
         {
             tweet.Id = Guid.NewGuid().ToString();
-            _tweets.InsertOne(tweet);
-            return 0;
+            var result = _users.Find(user => user.LoginId == tweet.LoginId).FirstOrDefault();
+            if (result != null)
+            {
+                tweet.PostedBy = string.Format(result.FirstName + " " + result.LastName);
+                _tweets.InsertOne(tweet);
+                return 0;
+            }
+            else
+                return 1;
         }
     }
 }

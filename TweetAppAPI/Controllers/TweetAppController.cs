@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,12 +29,22 @@ namespace TweetAppAPI.Controllers
             return Ok(_tweetAppServices.GetAllUsers());
         }
 
+        [HttpGet]
+        [Route("[controller]/{user}")]
+        
+        public IActionResult GetUserDetails(User user)
+        {
+            User response =_tweetAppServices.GetUserDetails(user.LoginId);
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("[controller]/login/{user}")]
         public IActionResult LoginUser(User user)
         {
             int result = _tweetAppServices.LoginUser(user.LoginId, user.Password);
-
+            ArrayList l =new ArrayList();
+            l.Add(user.LoginId);
             if(result == 1)
             {
                 return Unauthorized("Login Id does not exists..!!");
@@ -44,7 +55,7 @@ namespace TweetAppAPI.Controllers
             }
             else
             {
-                return Ok();
+                return Ok(l);
             }
         }
 
@@ -67,5 +78,7 @@ namespace TweetAppAPI.Controllers
                 return Ok();
             }
         }
+
+        
     }
 }

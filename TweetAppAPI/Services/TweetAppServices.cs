@@ -29,7 +29,15 @@ namespace TweetAppAPI.Services
         {
             return _users.Find(user => user.Email == email).FirstOrDefault();
         }
-
+        public User GetUserDetails(string loginId)
+        {
+            var result = _users.AsQueryable().Where(s => s.LoginId == loginId).Select(s => new { s.FirstName, s.LastName, s.Email }).FirstOrDefault();
+            User user = new User();
+            user.FirstName = result.FirstName;
+            user.LastName = result.LastName;
+            user.Email = result.Email;
+            return user;
+        }
         public int LoginUser(string loginId, string password)
         {
             User isExists = GetUserByLoginId(loginId);
@@ -64,6 +72,5 @@ namespace TweetAppAPI.Services
             }
             
         }
-
     }
 }

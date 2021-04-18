@@ -38,10 +38,10 @@ namespace TweetAppAPI.Controllers
         }
 
         [HttpPost]
-        [Route("[controller]/passwordReset/{loginId}")]
-        public IActionResult SendOTP(string loginId)
+        [Route("[controller]/sendOTP/{user}")]
+        public IActionResult SendOTP(User user)
         {
-            string response = _tweetAppServices.SendOTP(loginId);
+            string response = _tweetAppServices.SendOTP(user.LoginId);
             if(response != null)
             {
                 return Ok(response);
@@ -51,16 +51,16 @@ namespace TweetAppAPI.Controllers
         }
 
         [HttpPost]
-        [Route("[controller]/verifyOTP/{otp}")]
-        public IActionResult VerifyOTP(string otp)
+        [Route("[controller]/resetPassword/{user}")]
+        public IActionResult ResetPassword(User user)
         {
-            int result = _tweetAppServices.VerifyOTP(otp);
+            int result = _tweetAppServices.ResetPassword(user.LoginId, user.Password);
             if (result == 0)
             {
                 return Ok();
             }
             else
-                return Unauthorized("Incorrect OTP..!!");
+                return BadRequest("Failed to Reset Password..!!");
         }
 
         [HttpGet]

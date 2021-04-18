@@ -130,15 +130,7 @@ namespace TweetAppAPI.Services
             else return null;
             
         }
-        public int VerifyOTP(string otp)
-        {
-            if (otp != null && otp.Equals(_otp))
-            {
-                return 0;
-            }
-            else 
-                return 1;
-        }
+        
         private void  SendEmail(string email, string firstName, string otp)
         {
             MailAddress sender = new MailAddress(_smtpConfig.SenderEmail, _smtpConfig.SenderDisplayName);
@@ -163,6 +155,25 @@ namespace TweetAppAPI.Services
 
             mailMessage.BodyEncoding = Encoding.Default;
             smtpClient.SendMailAsync(mailMessage);
+        }
+
+        public int ResetPassword(string loginId, string password)
+        {
+            
+            var result = _users.Find(user => user.LoginId == loginId).FirstOrDefault();
+            if (result != null)
+            {
+                
+                var filter = Builders<User>.Filter.Eq(e => e.LoginId, loginId);
+
+                var update = Builders<User>.Update.Set(e => e.Password, password);
+
+                _users.FindOneAndUpdate(filter, update);
+
+                return 0;
+            }
+            else
+                return 1;
         }
     }
 }

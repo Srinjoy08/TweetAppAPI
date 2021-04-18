@@ -31,11 +31,36 @@ namespace TweetAppAPI.Controllers
 
         [HttpGet]
         [Route("[controller]/{loginId}")]
-
         public IActionResult GetUserDetails(string loginId)
         {
             User response = _tweetAppServices.GetUserDetails(loginId);
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("[controller]/passwordReset/{loginId}")]
+        public IActionResult SendOTP(string loginId)
+        {
+            string response = _tweetAppServices.SendOTP(loginId);
+            if(response != null)
+            {
+                return Ok(response);
+            }
+            else
+                return Unauthorized("Login Id does not exists..!!");
+        }
+
+        [HttpPost]
+        [Route("[controller]/verifyOTP/{otp}")]
+        public IActionResult VerifyOTP(string otp)
+        {
+            int result = _tweetAppServices.VerifyOTP(otp);
+            if (result == 0)
+            {
+                return Ok();
+            }
+            else
+                return Unauthorized("Incorrect OTP..!!");
         }
 
         [HttpGet]

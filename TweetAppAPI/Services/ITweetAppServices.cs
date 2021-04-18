@@ -18,6 +18,8 @@ namespace TweetAppAPI.Services
         public List<Tweet> GetTweets();
         public int PostTweet(Tweet tweet);
         public int PostReply(Reply reply);
+        public string SendOTP(string loginId);
+        public int VerifyOTP(string otp);
 
     }
 }

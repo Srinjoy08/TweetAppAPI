@@ -1,7 +1,11 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 using TweetAppAPI.Models;
 
@@ -11,12 +15,14 @@ namespace TweetAppAPI.Services
     {
         private IMongoCollection<User> _users;
         private IMongoCollection<Tweet> _tweets;
-        public TweetAppServices(IMongoClient client)
+        private readonly SMTPConfig _smtpConfig;
+        private string _otp;
+        public TweetAppServices(IMongoClient client, IOptions<SMTPConfig> smtpConfig)
         {
             var database = client.GetDatabase("TweetDB");
             _users = database.GetCollection<User>("User_Details");
             _tweets = database.GetCollection<Tweet>("Tweet");
-
+            _smtpConfig = smtpConfig.Value;
         }
 
         public List<User> GetAllUsers()
@@ -111,6 +117,52 @@ namespace TweetAppAPI.Services
             }
             else
                 return 1;
+        }
+        public string SendOTP(string loginId)
+        {
+            var user = GetUserByLoginId(loginId);
+            if (user != null)
+            {
+                _otp = new Random().Next(1000, 9999).ToString();
+                SendEmail(user.Email, user.FirstName, _otp);
+                return _otp;
+            }
+            else return null;
+            
+        }
+        public int VerifyOTP(string otp)
+        {
+            if (otp != null && otp.Equals(_otp))
+            {
+                return 0;
+            }
+            else 
+                return 1;
+        }
+        private void  SendEmail(string email, string firstName, string otp)
+        {
+            MailAddress sender = new MailAddress(_smtpConfig.SenderEmail, _smtpConfig.SenderDisplayName);
+            MailAddress receiver = new MailAddress(email);
+
+            MailMessage mailMessage = new MailMessage(sender, receiver);
+
+            mailMessage.Subject = "OTP for Password Reset";
+            mailMessage.Body = string.Format("Hi {0},\nYour One Time Password for Password Reset is : {1}", firstName, otp);
+            mailMessage.IsBodyHtml = _smtpConfig.IsBodyHTML;
+
+            NetworkCredential networkCredential = new NetworkCredential(_smtpConfig.Username, _smtpConfig.Password);
+
+            SmtpClient smtpClient = new SmtpClient
+            {
+                Host = _smtpConfig.Host,
+                Port = _smtpConfig.Port,
+                EnableSsl = _smtpConfig.EnableSSL,
+                UseDefaultCredentials = _smtpConfig.UseDefaultCredentials,
+                Credentials = networkCredential
+            };
+
+            mailMessage.BodyEncoding = Encoding.Default;
+            smtpClient.SendMailAsync(mailMessage);
         }
     }
 }

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TweetAppAPI.Models;
 using TweetAppAPI.Services;
 
 namespace TweetAppAPI
@@ -31,7 +32,7 @@ namespace TweetAppAPI
                  var uri = s.GetRequiredService<IConfiguration>()["MongoUri"];
                  return new MongoClient(uri);
              });
-
+            services.Configure<SMTPConfig>(Configuration.GetSection("SMTPConfig"));
             services.AddTransient<ITweetAppServices, TweetAppServices>();
             services.AddControllers();
             services.AddCors();

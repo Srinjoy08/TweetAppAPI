@@ -83,7 +83,7 @@ namespace TweetAppAPI.Services
         }
         public List<Tweet> GetTweets()
         {
-            return _tweets.Find(tweet => true).ToList();
+            return _tweets.Find(tweet => true).SortByDescending(s => s.CreatedOn).ToList();
         }
         public int PostTweet(Tweet tweet)
         {

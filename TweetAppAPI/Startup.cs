@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TweetAppAPI.Models;
-using TweetAppAPI.Services;
+using TweetAppAPI.Repository;
 
 namespace TweetAppAPI
 {
@@ -33,7 +27,7 @@ namespace TweetAppAPI
                  return new MongoClient(uri);
              });
             services.Configure<SMTPConfig>(Configuration.GetSection("SMTPConfig"));
-            services.AddTransient<ITweetAppServices, TweetAppServices>();
+            services.AddTransient<ITweetAppRepository, TweetAppRepository>();
             services.AddControllers();
             services.AddCors();
 

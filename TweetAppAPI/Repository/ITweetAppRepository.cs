@@ -1,13 +1,9 @@
-﻿using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TweetAppAPI.Models;
 
-namespace TweetAppAPI.Services
+namespace TweetAppAPI.Repository
 {
-    public interface ITweetAppServices
+    public interface ITweetAppRepository
     {
         public List<User> GetAllUsers();
         public User GetUserByLoginId(string loginId);

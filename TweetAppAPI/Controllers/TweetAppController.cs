@@ -1,14 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TweetAppAPI.Models;
-using TweetAppAPI.Services;
+using TweetAppAPI.Repository;
 
 namespace TweetAppAPI.Controllers
 {
@@ -16,8 +9,8 @@ namespace TweetAppAPI.Controllers
 
     public class TweetAppController : ControllerBase
     {
-        private ITweetAppServices _tweetAppServices;
-        public TweetAppController(ITweetAppServices tweetAppServices)
+        private ITweetAppRepository _tweetAppServices;
+        public TweetAppController(ITweetAppRepository tweetAppServices)
         {
             _tweetAppServices = tweetAppServices;
         }

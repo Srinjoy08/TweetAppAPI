@@ -6,18 +6,17 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
-using System.Threading.Tasks;
 using TweetAppAPI.Models;
 
-namespace TweetAppAPI.Services
+namespace TweetAppAPI.Repository
 {
-    public class TweetAppServices : ITweetAppServices
+    public class TweetAppRepository : ITweetAppRepository
     {
         private IMongoCollection<User> _users;
         private IMongoCollection<Tweet> _tweets;
         private readonly SMTPConfig _smtpConfig;
         private string _otp;
-        public TweetAppServices(IMongoClient client, IOptions<SMTPConfig> smtpConfig)
+        public TweetAppRepository(IMongoClient client, IOptions<SMTPConfig> smtpConfig)
         {
             var database = client.GetDatabase("TweetDB");
             _users = database.GetCollection<User>("User_Details");

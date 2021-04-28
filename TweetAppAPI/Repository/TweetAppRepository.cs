@@ -12,8 +12,8 @@ namespace TweetAppAPI.Repository
 {
     public class TweetAppRepository : ITweetAppRepository
     {
-        private IMongoCollection<User> _users;
-        private IMongoCollection<Tweet> _tweets;
+        private readonly IMongoCollection<User> _users;
+        private readonly IMongoCollection<Tweet> _tweets;
         private readonly SMTPConfig _smtpConfig;
         private string _otp;
         public TweetAppRepository(IMongoClient client, IOptions<SMTPConfig> smtpConfig)
@@ -24,20 +24,15 @@ namespace TweetAppAPI.Repository
             _smtpConfig = smtpConfig.Value;
         }
 
-        public List<User> GetAllUsers()
-        {
-            return _users.Find(user => true).ToList();
-        }
-
-        public User GetUserByLoginId(string loginId)
+        private User GetUserByLoginId(string loginId)
         {
             return _users.Find(user => user.LoginId == loginId).FirstOrDefault();
         }
-        public User GetUserByEmailId(string email)
+        private User GetUserByEmailId(string email)
         {
             return _users.Find(user => user.Email == email).FirstOrDefault();
         }
-        public User GetUserDetails(string loginId)
+        public User FetchUserDetails(string loginId)
         {
             var result = _users.AsQueryable().Where(s => s.LoginId == loginId).Select(s => new { s.FirstName, s.LastName, s.Email }).FirstOrDefault();
             User user = new User();
@@ -46,7 +41,7 @@ namespace TweetAppAPI.Repository
             user.Email = result.Email;
             return user;
         }
-        public int LoginUser(string loginId, string password)
+        public int Login(string loginId, string password)
         {
             User isExists = GetUserByLoginId(loginId);
             if (isExists != null)
@@ -60,7 +55,7 @@ namespace TweetAppAPI.Repository
                 return 1;
         }
 
-        public int RegisterUser(User user)
+        public int Register(User user)
         {
             User isExists = GetUserByLoginId(user.LoginId);
             if (isExists != null)
@@ -80,7 +75,7 @@ namespace TweetAppAPI.Repository
             }
 
         }
-        public List<Tweet> GetTweets()
+        public List<Tweet> GetAllTweets()
         {
             return _tweets.Find(tweet => true).SortByDescending(s => s.CreatedOn).ToList();
         }
@@ -117,7 +112,7 @@ namespace TweetAppAPI.Repository
             else
                 return 1;
         }
-        public string SendOTP(string loginId)
+        public string RequestOTP(string loginId)
         {
             var user = GetUserByLoginId(loginId);
             if (user != null)

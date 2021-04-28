@@ -9,32 +9,72 @@ namespace TweetAppAPI.Controllers
 
     public class TweetAppController : ControllerBase
     {
-        private ITweetAppRepository _tweetAppServices;
-        public TweetAppController(ITweetAppRepository tweetAppServices)
-        {
-            _tweetAppServices = tweetAppServices;
-        }
+        private readonly ITweetAppRepository _tweetAppRepository;
 
-        [HttpGet]
-        [Route("[controller]")]
-        public IActionResult GetAllUsers()
+        public TweetAppController(ITweetAppRepository tweetAppRepository)
         {
-            return Ok(_tweetAppServices.GetAllUsers());
-        }
-
-        [HttpGet]
-        [Route("[controller]/{loginId}")]
-        public IActionResult GetUserDetails(string loginId)
-        {
-            User response = _tweetAppServices.GetUserDetails(loginId);
-            return Ok(response);
+            _tweetAppRepository = tweetAppRepository;
         }
 
         [HttpPost]
-        [Route("[controller]/sendOTP/{user}")]
-        public IActionResult SendOTP(User user)
+        [Route("[controller]/login/{user}")]
+        public IActionResult Login(User user)
         {
-            string response = _tweetAppServices.SendOTP(user.LoginId);
+            var response = _tweetAppRepository.Login(user.LoginId, user.Password);            
+            if (response == 1)
+            {
+                return Unauthorized("Login Id Incorrect..!!");
+            }
+            else if (response == 2)
+            {
+                return Unauthorized("Password Incorrect..!!");
+            }
+            else
+            {
+                ArrayList list = new ArrayList();
+                list.Add(user.LoginId);
+                return Ok(list);
+            }
+        }
+
+        [HttpPost]
+        [Route("[controller]/register/{user}")]
+        public IActionResult Register(User user)
+        {
+            var response = _tweetAppRepository.Register(user);
+
+            if (response == 1)
+            {
+                return BadRequest("Login Id already exists..!!");
+            }
+            else if (response == 2)
+            {
+                return BadRequest("Email address already exists..!!");
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+        [HttpGet]
+        [Route("[controller]/fetchUserDetails/{loginId}")]
+        public IActionResult FetchUserDetails(string loginId)
+        {
+            var response = _tweetAppRepository.FetchUserDetails(loginId);
+
+            if(response != null)
+                return Ok(response);
+            else
+                return Unauthorized("Login Id does not exists..!!");
+        }
+
+        [HttpPost]
+        [Route("[controller]/requestOTP/{user}")]
+        public IActionResult RequestOTP(User user)
+        {
+            var response = _tweetAppRepository.RequestOTP(user.LoginId);
+
             if(response != null)
             {
                 return Ok(response);
@@ -47,8 +87,8 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/resetPassword/{user}")]
         public IActionResult ResetPassword(User user)
         {
-            int result = _tweetAppServices.ResetPassword(user.LoginId, user.Password);
-            if (result == 0)
+            var response = _tweetAppRepository.ResetPassword(user.LoginId, user.Password);
+            if (response == 0)
             {
                 return Ok();
             }
@@ -58,17 +98,17 @@ namespace TweetAppAPI.Controllers
 
         [HttpGet]
         [Route("[controller]/tweets/")]
-        public IActionResult GetTweets()
+        public IActionResult GetAllTweets()
         {
-            return Ok(_tweetAppServices.GetTweets());
+            return Ok(_tweetAppRepository.GetAllTweets());
         }
 
         [HttpPost]
         [Route("[controller]/tweets/{tweet}")]
         public IActionResult PostTweet(Tweet tweet)
         {
-            int result = _tweetAppServices.PostTweet(tweet);
-            if (result == 1)
+            var response = _tweetAppRepository.PostTweet(tweet);
+            if (response == 1)
             {
                 return BadRequest("Failed to Post Tweet..!!");
             }
@@ -79,13 +119,13 @@ namespace TweetAppAPI.Controllers
         }
 
         [HttpPost]
-        [Route("[controller]/replies/{reply}")]
+        [Route("[controller]/postReply/{reply}")]
         public IActionResult PostReply(Reply reply)
         {
-            int result = _tweetAppServices.PostReply(reply);
-            if (result == 1)
+            var response = _tweetAppRepository.PostReply(reply);
+            if (response == 1)
             {
-                return BadRequest("Failed to Reply to Tweet..!!");
+                return BadRequest("Failed to Reply..!!");
             }
             else
             {
@@ -93,47 +133,7 @@ namespace TweetAppAPI.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("[controller]/login/{user}")]
-        public IActionResult LoginUser(User user)
-        {
-            int result = _tweetAppServices.LoginUser(user.LoginId, user.Password);
-            ArrayList l =new ArrayList();
-            l.Add(user.LoginId);
-            if(result == 1)
-            {
-                return Unauthorized("Login Id does not exists..!!");
-            }
-            else if(result == 2)
-            {
-                return Unauthorized("Password Incorrect..!!");
-            }
-            else
-            {
-                return Ok(l);
-            }
-        }
-
-        [HttpPost]
-        [Route("[controller]/register/{user}")]
-        public IActionResult RegisterUser(User user)
-        {
-            int result = _tweetAppServices.RegisterUser(user);
-            
-            if(result == 1)
-            {
-                return BadRequest("Login Id already exists..!!");
-            }
-            else if (result == 2)
-            {
-                return BadRequest("Email address already exists..!!");
-            }
-            else
-            {
-                return Ok();
-            }
-        }
-
+        
         
     }
 }

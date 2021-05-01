@@ -18,35 +18,34 @@ namespace TweetAppAPI.Test
         }
 
         [TestCase("ajaysharma2021","ajay2021")]
-        [TestCase("userTest2021", "user2021")]
-        public void LoginTest(string loginId, string password)
+        public void Login_PassTest(string loginId, string password)
         {
             var result = controller.Login(new Models.User() { LoginId = loginId, Password = password});
-            if(result.GetType() == typeof(OkObjectResult))
-            {
-                Assert.Pass();
-            }
-            else if(result.GetType() == typeof(UnauthorizedObjectResult))
-            {
-                Assert.Pass();
-            }
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [TestCase("userTest2021", "user2021")]
+        public void Login_FailTest(string loginId, string password)
+        {
+            var result = controller.Login(new Models.User() { LoginId = loginId, Password = password });
+            Assert.IsInstanceOf<UnauthorizedObjectResult>(result);
         }
 
         [TestCase("ajaysharma2021")]
-        [TestCase("userTest2021")]
-        public void FetchUserDetailsTest(string loginId)
+        public void FetchUserDetails_PassTest(string loginId)
         {
             var result = controller.FetchUserDetails(loginId);
-            if (result.GetType() == typeof(OkObjectResult))
-            {
-                Assert.Pass();
-            }
-            else if (result.GetType() == typeof(UnauthorizedObjectResult))
-            {
-                Assert.Pass();
-            }
-        }        
-        
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+              
+
+        [TestCase("userTest2021")]
+        public void FetchUserDetails_FailTest(string loginId)
+        {
+            var result = controller.FetchUserDetails(loginId);
+            Assert.IsInstanceOf<UnauthorizedObjectResult>(result);
+        }
+
         [Test]
         public void GetAllTweetsTest()
         {

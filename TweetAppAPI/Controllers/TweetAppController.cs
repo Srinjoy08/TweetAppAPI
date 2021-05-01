@@ -9,25 +9,27 @@ namespace TweetAppAPI.Controllers
 
     public class TweetAppController : ControllerBase
     {
-        private readonly ITweetAppRepository _tweetAppRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ITweetRepository _tweetRepository;
 
-        public TweetAppController(ITweetAppRepository tweetAppRepository)
+        public TweetAppController(IUserRepository userRepository, ITweetRepository tweetRepository)
         {
-            _tweetAppRepository = tweetAppRepository;
+            _userRepository = userRepository;
+            _tweetRepository = tweetRepository;
         }
 
         [HttpPost]
         [Route("[controller]/login/{user}")]
         public IActionResult Login(User user)
         {
-            var response = _tweetAppRepository.Login(user.LoginId, user.Password);            
+            var response = _userRepository.Login(user.LoginId, user.Password);            
             if (response == 1)
             {
-                return Unauthorized("Login Id Incorrect..!!");
+                return Unauthorized("Login Id is incorrect..!!");
             }
             else if (response == 2)
             {
-                return Unauthorized("Password Incorrect..!!");
+                return Unauthorized("Password is incorrect..!!");
             }
             else
             {
@@ -41,7 +43,7 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/register/{user}")]
         public IActionResult Register(User user)
         {
-            var response = _tweetAppRepository.Register(user);
+            var response = _userRepository.Register(user);
 
             if (response == 1)
             {
@@ -61,7 +63,7 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/fetchUserDetails/{loginId}")]
         public IActionResult FetchUserDetails(string loginId)
         {
-            var response = _tweetAppRepository.FetchUserDetails(loginId);
+            var response = _userRepository.FetchUserDetails(loginId);
 
             if(response != null)
                 return Ok(response);
@@ -73,7 +75,7 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/requestOTP/{user}")]
         public IActionResult RequestOTP(User user)
         {
-            var response = _tweetAppRepository.RequestOTP(user.LoginId);
+            var response = _userRepository.RequestOTP(user.LoginId);
 
             if(response != null)
             {
@@ -87,7 +89,7 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/resetPassword/{user}")]
         public IActionResult ResetPassword(User user)
         {
-            var response = _tweetAppRepository.ResetPassword(user.LoginId, user.Password);
+            var response = _userRepository.ResetPassword(user.LoginId, user.Password);
             if (response == 0)
             {
                 return Ok();
@@ -100,14 +102,14 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/tweets/")]
         public IActionResult GetAllTweets()
         {
-            return Ok(_tweetAppRepository.GetAllTweets());
+            return Ok(_tweetRepository.GetAllTweets());
         }
 
         [HttpPost]
         [Route("[controller]/tweets/{tweet}")]
         public IActionResult PostTweet(Tweet tweet)
         {
-            var response = _tweetAppRepository.PostTweet(tweet);
+            var response = _tweetRepository.PostTweet(tweet);
             if (response == 1)
             {
                 return BadRequest("Failed to Post Tweet..!!");
@@ -122,7 +124,7 @@ namespace TweetAppAPI.Controllers
         [Route("[controller]/postReply/{reply}")]
         public IActionResult PostReply(Reply reply)
         {
-            var response = _tweetAppRepository.PostReply(reply);
+            var response = _tweetRepository.PostReply(reply);
             if (response == 1)
             {
                 return BadRequest("Failed to Reply..!!");

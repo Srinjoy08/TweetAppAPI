@@ -31,13 +31,18 @@ namespace TweetAppAPI.Repository
         public User FetchUserDetails(string loginId)
         {
             var result = _users.AsQueryable().Where(s => s.LoginId == loginId).Select(s => new { s.FirstName, s.LastName, s.Email }).FirstOrDefault();
-            User user = new User
+            if (result != null)
             {
-                FirstName = result.FirstName,
-                LastName = result.LastName,
-                Email = result.Email
-            };
-            return user;
+               return new User
+               {
+                    FirstName = result.FirstName,
+                    LastName = result.LastName,
+                    Email = result.Email
+               };
+            }
+            else 
+                return null;
+            
         }
         public int Login(string loginId, string password)
         {

@@ -13,7 +13,11 @@ namespace TweetAppAPI.Services
     public class EmailService : IEmailService
     {
         private readonly SMTPConfig _smtpConfig;
-        
+
+        public EmailService()
+        {
+        }
+
         public EmailService(IOptions<SMTPConfig> smtpConfig)
         {
             _smtpConfig = smtpConfig.Value;

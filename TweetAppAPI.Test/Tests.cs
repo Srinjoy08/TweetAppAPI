@@ -4,6 +4,7 @@ using TweetAppAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 using TweetAppAPI.Test.Helper;
 using TweetAppAPI.Services;
+using TweetAppAPI.Models;
 
 namespace TweetAppAPI.Test
 {
@@ -51,7 +52,37 @@ namespace TweetAppAPI.Test
         {
             var result = controller.GetAllTweets();
             Assert.IsInstanceOf<OkObjectResult>(result);
-            //Assert.Pass();
+        }
+        
+        [Test]
+        public void Register_Test_Fail()
+        {
+            var request = new User
+            {
+                FirstName = "Suresh",
+                LastName = "Sen",
+                Email = "sureshsen@gmail.com",
+                LoginId = "ajaysharma2021",
+                Password = "suresh2021",
+                contactNumber = "2233445566"
+            };
+            var result = controller.Register(request);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+        [Test]
+        public void Register_Test_Fail_2()
+        {
+            var request = new User
+            {
+                FirstName = "Suresh",
+                LastName = "Sen",
+                Email = "ajay.sharma@xyzmail.com",
+                LoginId = "sureshsen2021",
+                Password = "suresh2021",
+                contactNumber = "2233445566"
+            };
+            var result = controller.Register(request);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Confluent.Kafka;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections;
 using TweetAppAPI.Models;
 using TweetAppAPI.Repository;
@@ -11,6 +13,8 @@ namespace TweetAppAPI.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly ITweetRepository _tweetRepository;
+        private readonly ProducerConfig config = new ProducerConfig { BootstrapServers = "localhost:9092" };
+        private readonly string topic = "Tweet-Topic";
 
         public TweetAppController(IUserRepository userRepository, ITweetRepository tweetRepository)
         {
@@ -116,6 +120,7 @@ namespace TweetAppAPI.Controllers
             }
             else
             {
+                SendToKafka(topic, tweet.Body);
                 return Ok();
             }
         }
@@ -135,7 +140,24 @@ namespace TweetAppAPI.Controllers
             }
         }
 
-        
-        
+        private Object SendToKafka(string topic, string message)
+        {
+            using (var producer =
+                 new ProducerBuilder<Null, string>(config).Build())
+            {
+                try
+                {
+                    return producer.ProduceAsync(topic, new Message<Null, string> { Value = message })
+                        .GetAwaiter()
+                        .GetResult();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Oops, something went wrong: {e}");
+                }
+            }
+            return null;
+        }
+
     }
 }

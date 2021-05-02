@@ -136,6 +136,7 @@ namespace TweetAppAPI.Controllers
             }
             else
             {
+                SendToKafka(topic, reply.ReplyBody);
                 return Ok();
             }
         }

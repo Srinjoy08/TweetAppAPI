@@ -18,7 +18,7 @@ namespace TweetAppAPI.Test
             controller = config.GetTweetAppController();
         }
 
-        [TestCase("ajaysharma2021","ajay2021")]
+        [TestCase("ajaysharma2021","ajay2020")]
         public void Login_PassTest(string loginId, string password)
         {
             var result = controller.Login(new Models.User() { LoginId = loginId, Password = password});

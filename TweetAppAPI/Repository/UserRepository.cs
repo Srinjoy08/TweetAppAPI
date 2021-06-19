@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TweetAppAPI.DbContext;
 using TweetAppAPI.Models;
 using TweetAppAPI.Services;
 
@@ -13,10 +14,9 @@ namespace TweetAppAPI.Repository
         private readonly IMongoCollection<User> _users;
         private readonly IEmailService _emailService;
 
-        public UserRepository(IMongoClient client, IEmailService emailService)
+        public UserRepository(IMongoDbContext dbContext, IEmailService emailService)
         {
-            var database = client.GetDatabase("TweetDB");
-            _users = database.GetCollection<User>("User_Details");
+            _users = dbContext.GetUserCollection();
             _emailService = emailService;
         }
 

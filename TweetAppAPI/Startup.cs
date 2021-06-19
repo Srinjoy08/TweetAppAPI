@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
+using TweetAppAPI.DbContext;
 using TweetAppAPI.Models;
 using TweetAppAPI.Repository;
 using TweetAppAPI.Services;
@@ -28,6 +29,7 @@ namespace TweetAppAPI
                  return new MongoClient(uri);
              });
             services.Configure<SMTPConfig>(Configuration.GetSection("SMTPConfig"));
+            services.AddTransient<IMongoDbContext, MongoDbContext>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ITweetRepository, TweetRepository>();
             services.AddTransient<IEmailService, EmailService>();

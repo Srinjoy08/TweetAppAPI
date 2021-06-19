@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TweetAppAPI.DbContext;
 using TweetAppAPI.Models;
 
 namespace TweetAppAPI.Repository
@@ -11,10 +12,9 @@ namespace TweetAppAPI.Repository
     {
         private readonly IMongoCollection<Tweet> _tweets;
         private readonly IUserRepository _userRepository;
-        public TweetRepository(IMongoClient client, IUserRepository userRepository)
+        public TweetRepository(IMongoDbContext dbContext, IUserRepository userRepository)
         {
-            var database = client.GetDatabase("TweetDB");
-            _tweets = database.GetCollection<Tweet>("Tweet");
+            _tweets = dbContext.GetTweetCollection();
             _userRepository = userRepository;
         }
 
